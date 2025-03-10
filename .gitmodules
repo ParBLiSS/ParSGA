@@ -1,0 +1,9 @@
+[submodule "ext/PaSGAL"]
+	path = ext/PaSGAL
+	url = https://github.com/ParBLiSS/PaSGAL.git
+[submodule "ext/gapbs"]
+	path = ext/gapbs
+	url = git@github.com:abanerjee10/gapbs.git
+[submodule "ext/parlaylib"]
+	path = ext/parlaylib
+	url = https://github.com/cmuparlay/parlaylib.git
