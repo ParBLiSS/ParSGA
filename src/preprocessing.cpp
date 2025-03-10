@@ -24,8 +24,8 @@ double imbalance(double const &max_element, std::vector<double>& element_vector)
 }
 
 int main(int argc, char **argv) {
-    if (argc < 4) {
-        throw std::runtime_error("Provided less than 3 arguments");
+    if (argc < 3) {
+        throw std::runtime_error("Provided less than 2 arguments");
     }
     bool match_cut;
     int match_score, subst_score, del_score, ins_score;
