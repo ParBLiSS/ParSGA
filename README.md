@@ -35,17 +35,17 @@ After the compilation completes, expect the executables `preprocessing`, `parall
 
 * Preprocess a .vg format graph to construct Compressed Sparse Row (CSR) format graph and character graphs and component labels:
 ```sh
-preprocessing graph.vg output_path_prefix
+./preprocessing graph.vg output_path_prefix
 ```
 
 * Run the serial algorithm to align a set of query sequences against the graph:
 ```sh
-serial_exe graph.vg input_path_prefix output_path_prefix read_name
+./serial_exe input_path_prefix output_path_prefix read_name
 ```
 
 * Run the parallel ParSGA algorithm to align a set of query sequences against the graph:
 ```sh
-parallel_exe graph.vg input_path_prefix output_path_prefix read_name
+./parallel_exe input_path_prefix output_path_prefix read_name num_threads
 ```
 
 **Preprocessing file format:** The CSRs of the graph and character graphs and their component labels are stored with suffixes appended to the output_path_prefix given to the preprocessing executable. This format is assumed in the input to the serial_exe and parallel_exe executables with the given input_path_prefix.

@@ -29,7 +29,6 @@ inline LogScore match_sub(const char &a, const char &b, const LogScore &match_sc
 }
 
 void serial_timing_calculations(double time, const int num_reads_so_far, double &running_time, double &running_time_var) {
-  // welford method for one-pass variance
   double old_time_mean = running_time;
   running_time += (time - old_time_mean) / num_reads_so_far;
   running_time_var += (time-running_time)*(time-old_time_mean);
@@ -210,12 +209,12 @@ std::vector<LogScore> serial_align_CSR(const std::vector<std::string> &reads, co
     edits[0] = edit_array;
     edits[1] = edit_array + numVertices;
     for(int32_t i = 0; i < numVertices; i++) {
-      edits[1][i] = 0; // base case of 0 if 1-indexed can become -1 for 0-indexed: -1 & 1 = 1
+      edits[0][i] = match_sub<LogScore>(vertex_labels[i], read[0], match_score, subst_score);
     }
     double times[NUM_OPERATIONS]  = {0.0};
     double start_times[NUM_OPERATIONS];
     auto readLength = read.length();
-    for(int32_t i = 0; i < readLength; i++) {
+    for(int32_t i = 1; i < readLength; i++) {
       char read_base = read[i];
       bool const src = (i - 1) & 1, dst = i & 1;
       start_times[TOTAL] = omp_get_wtime();
@@ -378,7 +377,7 @@ std::vector<LogScore> parallel_align_CSR(const std::vector<std::string> &reads, 
     edits[1] = edit_array + numVertices;
     #pragma omp parallel for
     for(int32_t i = 0; i < numVertices; i++) {
-      edits[1][i] = 0; // base case of 0 if 1-indexed can become -1 for 0-indexed: -1 & 1 = 1
+      edits[0][i] = match_sub<LogScore>(vertex_labels[i], read[0], match_score, subst_score);
     }
     std::vector<std::vector<double>> global_times(NUM_OPERATIONS,std::vector<double>(omp_get_max_threads(), 0.0)); // time on each stage of alignment on all threads, needs to be zeroed for each new read
     auto readLength = read.length();
@@ -389,7 +388,7 @@ std::vector<LogScore> parallel_align_CSR(const std::vector<std::string> &reads, 
       //double private_total_time = 0, private_deletion_time = 0, private_match_mismatch_time = 0, private_insertion_time = 0;
       double start_times[NUM_OPERATIONS];
       double private_times[NUM_OPERATIONS] = {0.0}; // time on each stage of alignment on owner thread
-      for(int32_t i = 0; i < readLength; i++) {
+      for(int32_t i = 1; i < readLength; i++) {
         start_times[TOTAL] = omp_get_wtime();
         char read_base = read[i];
         bool const src = (i - 1) & 1, dst = i & 1;
